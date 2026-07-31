@@ -82,6 +82,9 @@ class CustomDateRangePicker extends StatefulWidget {
   /// Tint for the default chevron icons. Falls back to [Colors.grey].
   final Color? chevronColor;
 
+  /// Corner radius for the Cancel/Apply buttons. Falls back to 24.0 when null.
+  final double? buttonBorderRadius;
+
   /// Font family applied to all text in the picker.
   final String? fontFamily;
 
@@ -108,6 +111,7 @@ class CustomDateRangePicker extends StatefulWidget {
     this.leftChevronIcon,
     this.rightChevronIcon,
     this.chevronColor,
+    this.buttonBorderRadius,
     this.fontFamily,
   });
 
@@ -143,6 +147,7 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker>
 
   @override
   Widget build(BuildContext context) {
+    final double buttonRadius = widget.buttonBorderRadius ?? 24.0;
     return Center(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -267,11 +272,11 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker>
                         fontFamily: widget.fontFamily,
                         startEndDateChange:
                             (DateTime startDateData, DateTime endDateData) {
-                              setState(() {
-                                startDate = startDateData;
-                                endDate = endDateData;
-                              });
-                            },
+                          setState(() {
+                            startDate = startDateData;
+                            endDate = endDateData;
+                          });
+                        },
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
@@ -285,24 +290,23 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker>
                             Expanded(
                               child: Container(
                                 height: 48,
-                                decoration: const BoxDecoration(
+                                decoration: BoxDecoration(
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(24.0),
+                                    Radius.circular(buttonRadius),
                                   ),
                                 ),
                                 child: OutlinedButton(
                                   style: ButtonStyle(
                                     side: WidgetStateProperty.all(
                                       BorderSide(
-                                        color:
-                                            widget.cancelBorderColor ??
+                                        color: widget.cancelBorderColor ??
                                             widget.primaryColor,
                                       ),
                                     ),
                                     shape: WidgetStateProperty.all(
-                                      const RoundedRectangleBorder(
+                                      RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
-                                          Radius.circular(24.0),
+                                          Radius.circular(buttonRadius),
                                         ),
                                       ),
                                     ),
@@ -323,8 +327,7 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker>
                                       style: TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 18,
-                                        color:
-                                            widget.cancelTextColor ??
+                                        color: widget.cancelTextColor ??
                                             Colors.white,
                                         fontFamily: widget.fontFamily,
                                       ),
@@ -337,24 +340,23 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker>
                             Expanded(
                               child: Container(
                                 height: 48,
-                                decoration: const BoxDecoration(
+                                decoration: BoxDecoration(
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(24.0),
+                                    Radius.circular(buttonRadius),
                                   ),
                                 ),
                                 child: OutlinedButton(
                                   style: ButtonStyle(
                                     side: WidgetStateProperty.all(
                                       BorderSide(
-                                        color:
-                                            widget.applyBorderColor ??
+                                        color: widget.applyBorderColor ??
                                             widget.primaryColor,
                                       ),
                                     ),
                                     shape: WidgetStateProperty.all(
-                                      const RoundedRectangleBorder(
+                                      RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
-                                          Radius.circular(24.0),
+                                          Radius.circular(buttonRadius),
                                         ),
                                       ),
                                     ),
@@ -375,8 +377,7 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker>
                                       style: TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 18,
-                                        color:
-                                            widget.applyTextColor ??
+                                        color: widget.applyTextColor ??
                                             Colors.white,
                                         fontFamily: widget.fontFamily,
                                       ),
@@ -437,6 +438,7 @@ void showCustomDateRangePicker(
   Widget? leftChevronIcon,
   Widget? rightChevronIcon,
   Color? chevronColor,
+  double? buttonBorderRadius,
 }) {
   /// Request focus to take it away from any input field that might be in focus
   FocusScope.of(context).requestFocus(FocusNode());
@@ -467,6 +469,7 @@ void showCustomDateRangePicker(
       leftChevronIcon: leftChevronIcon,
       rightChevronIcon: rightChevronIcon,
       chevronColor: chevronColor,
+      buttonBorderRadius: buttonBorderRadius,
     ),
   );
 }
