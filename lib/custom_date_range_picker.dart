@@ -82,6 +82,10 @@ class CustomDateRangePicker extends StatefulWidget {
   /// Tint for the default chevron icons. Falls back to [Colors.grey].
   final Color? chevronColor;
 
+  /// Border color for the chevron buttons. Falls back to [Colors.grey.shade300].
+  /// Pass [Colors.transparent] to remove the outline.
+  final Color? chevronBorderColor;
+
   /// Corner radius for the Cancel/Apply buttons. Falls back to 24.0 when null.
   final double? buttonBorderRadius;
 
@@ -111,6 +115,7 @@ class CustomDateRangePicker extends StatefulWidget {
     this.leftChevronIcon,
     this.rightChevronIcon,
     this.chevronColor,
+    this.chevronBorderColor,
     this.buttonBorderRadius,
     this.fontFamily,
   });
@@ -269,6 +274,7 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker>
                         leftChevronIcon: widget.leftChevronIcon,
                         rightChevronIcon: widget.rightChevronIcon,
                         chevronColor: widget.chevronColor,
+                        chevronBorderColor: widget.chevronBorderColor,
                         fontFamily: widget.fontFamily,
                         startEndDateChange:
                             (DateTime startDateData, DateTime endDateData) {
@@ -438,6 +444,7 @@ void showCustomDateRangePicker(
   Widget? leftChevronIcon,
   Widget? rightChevronIcon,
   Color? chevronColor,
+  Color? chevronBorderColor,
   double? buttonBorderRadius,
 }) {
   /// Request focus to take it away from any input field that might be in focus
@@ -469,6 +476,7 @@ void showCustomDateRangePicker(
       leftChevronIcon: leftChevronIcon,
       rightChevronIcon: rightChevronIcon,
       chevronColor: chevronColor,
+      chevronBorderColor: chevronBorderColor,
       buttonBorderRadius: buttonBorderRadius,
     ),
   );

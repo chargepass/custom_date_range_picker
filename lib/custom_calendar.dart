@@ -51,6 +51,10 @@ class CustomCalendar extends StatefulWidget {
   /// Tint applied to the default chevron icons. Falls back to [Colors.grey].
   final Color? chevronColor;
 
+  /// Border color for the chevron buttons. Falls back to [Colors.grey.shade300].
+  /// Pass [Colors.transparent] to remove the outline.
+  final Color? chevronBorderColor;
+
   /// Font family applied to the calendar text (month title, weekday names,
   /// day numbers). Falls back to the ambient font when null.
   final String? fontFamily;
@@ -72,6 +76,7 @@ class CustomCalendar extends StatefulWidget {
     this.leftChevronIcon,
     this.rightChevronIcon,
     this.chevronColor,
+    this.chevronBorderColor,
     this.fontFamily,
   });
 
@@ -140,7 +145,9 @@ class CustomCalendarState extends State<CustomCalendar> {
                   width: 38,
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(24.0)),
-                    border: Border.all(color: Colors.grey.shade300),
+                    border: Border.all(
+                      color: widget.chevronBorderColor ?? Colors.grey.shade300,
+                    ),
                   ),
                   child: Material(
                     color: Colors.transparent,
@@ -158,8 +165,7 @@ class CustomCalendarState extends State<CustomCalendar> {
                           setListOfDate(currentMonthDate);
                         });
                       },
-                      child:
-                          widget.leftChevronIcon ??
+                      child: widget.leftChevronIcon ??
                           Icon(
                             Icons.keyboard_arrow_left,
                             color: widget.chevronColor ?? Colors.grey,
@@ -188,7 +194,9 @@ class CustomCalendarState extends State<CustomCalendar> {
                   width: 38,
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(24.0)),
-                    border: Border.all(color: Colors.grey.shade300),
+                    border: Border.all(
+                      color: widget.chevronBorderColor ?? Colors.grey.shade300,
+                    ),
                   ),
                   child: Material(
                     color: Colors.transparent,
@@ -206,8 +214,7 @@ class CustomCalendarState extends State<CustomCalendar> {
                           setListOfDate(currentMonthDate);
                         });
                       },
-                      child:
-                          widget.rightChevronIcon ??
+                      child: widget.rightChevronIcon ??
                           Icon(
                             Icons.keyboard_arrow_right,
                             color: widget.chevronColor ?? Colors.grey,
@@ -281,12 +288,12 @@ class CustomCalendarState extends State<CustomCalendar> {
                           decoration: BoxDecoration(
                             color: startDate != null && endDate != null
                                 ? getIsItStartAndEndDate(date) ||
-                                          getIsInRange(date)
-                                      ? widget.dateRangeColor ??
-                                            widget.primaryColor.withValues(
-                                              alpha: 0.4,
-                                            )
-                                      : Colors.transparent
+                                        getIsInRange(date)
+                                    ? widget.dateRangeColor ??
+                                        widget.primaryColor.withValues(
+                                          alpha: 0.4,
+                                        )
+                                    : Colors.transparent
                                 : Colors.transparent,
                             borderRadius: BorderRadius.only(
                               bottomLeft: isStartDateRadius(date)
@@ -360,7 +367,7 @@ class CustomCalendarState extends State<CustomCalendar> {
                           decoration: BoxDecoration(
                             color: getIsItStartAndEndDate(date)
                                 ? (widget.selectedDateColor ??
-                                      widget.primaryColor)
+                                    widget.primaryColor)
                                 : Colors.transparent,
                             borderRadius: const BorderRadius.all(
                               Radius.circular(32.0),
@@ -368,7 +375,7 @@ class CustomCalendarState extends State<CustomCalendar> {
                             border: Border.all(
                               color: getIsItStartAndEndDate(date)
                                   ? (widget.selectedDateTextColor ??
-                                        Colors.white)
+                                      Colors.white)
                                   : Colors.transparent,
                               width: 2,
                             ),
@@ -388,14 +395,14 @@ class CustomCalendarState extends State<CustomCalendar> {
                               style: TextStyle(
                                 color: getIsItStartAndEndDate(date)
                                     ? (widget.selectedDateTextColor ??
-                                          Colors.white)
+                                        Colors.white)
                                     : currentMonthDate.month == date.month
-                                    ? widget.primaryColor
-                                    : Colors.grey.withValues(alpha: 0.6),
+                                        ? widget.primaryColor
+                                        : Colors.grey.withValues(alpha: 0.6),
                                 fontSize:
                                     MediaQuery.of(context).size.width > 360
-                                    ? 18
-                                    : 16,
+                                        ? 18
+                                        : 16,
                                 fontWeight: getIsItStartAndEndDate(date)
                                     ? FontWeight.bold
                                     : FontWeight.normal,
@@ -415,13 +422,12 @@ class CustomCalendarState extends State<CustomCalendar> {
                       height: 6,
                       width: 6,
                       decoration: BoxDecoration(
-                        color:
-                            DateTime.now().day == date.day &&
+                        color: DateTime.now().day == date.day &&
                                 DateTime.now().month == date.month &&
                                 DateTime.now().year == date.year
                             ? getIsInRange(date)
-                                  ? Colors.white
-                                  : widget.primaryColor
+                                ? Colors.white
+                                : widget.primaryColor
                             : Colors.transparent,
                         shape: BoxShape.circle,
                       ),
