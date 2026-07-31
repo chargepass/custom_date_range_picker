@@ -28,6 +28,33 @@ class CustomCalendar extends StatefulWidget {
   /// The primary color to be used in the calendar's color scheme
   final Color primaryColor;
 
+  /// The fill color for the selected start/end date circles.
+  /// Falls back to [primaryColor] when null.
+  final Color? selectedDateColor;
+
+  /// The text color used for the selected start/end date numbers.
+  /// Falls back to [Colors.white] when null.
+  final Color? selectedDateTextColor;
+
+  /// The highlight color for dates within the selected range.
+  /// Falls back to [primaryColor] with 40% opacity when null.
+  final Color? dateRangeColor;
+
+  /// Custom icon widget for the previous-month chevron.
+  /// Falls back to [Icons.keyboard_arrow_left] tinted with [chevronColor].
+  final Widget? leftChevronIcon;
+
+  /// Custom icon widget for the next-month chevron.
+  /// Falls back to [Icons.keyboard_arrow_right] tinted with [chevronColor].
+  final Widget? rightChevronIcon;
+
+  /// Tint applied to the default chevron icons. Falls back to [Colors.grey].
+  final Color? chevronColor;
+
+  /// Font family applied to the calendar text (month title, weekday names,
+  /// day numbers). Falls back to the ambient font when null.
+  final String? fontFamily;
+
   /// A function to be called when the selected date range changes
   final Function(DateTime, DateTime)? startEndDateChange;
 
@@ -39,6 +66,13 @@ class CustomCalendar extends StatefulWidget {
     this.minimumDate,
     this.maximumDate,
     required this.primaryColor,
+    this.selectedDateColor,
+    this.selectedDateTextColor,
+    this.dateRangeColor,
+    this.leftChevronIcon,
+    this.rightChevronIcon,
+    this.chevronColor,
+    this.fontFamily,
   });
 
   @override
@@ -106,24 +140,30 @@ class CustomCalendarState extends State<CustomCalendar> {
                   width: 38,
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(24.0)),
-                    border: Border.all(
-                      color: Colors.grey.shade300,
-                    ),
+                    border: Border.all(color: Colors.grey.shade300),
                   ),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(24.0),
+                      ),
                       onTap: () {
                         setState(() {
-                          currentMonthDate = DateTime(currentMonthDate.year, currentMonthDate.month, 0);
+                          currentMonthDate = DateTime(
+                            currentMonthDate.year,
+                            currentMonthDate.month,
+                            0,
+                          );
                           setListOfDate(currentMonthDate);
                         });
                       },
-                      child: const Icon(
-                        Icons.keyboard_arrow_left,
-                        color: Colors.grey,
-                      ),
+                      child:
+                          widget.leftChevronIcon ??
+                          Icon(
+                            Icons.keyboard_arrow_left,
+                            color: widget.chevronColor ?? Colors.grey,
+                          ),
                     ),
                   ),
                 ),
@@ -136,6 +176,7 @@ class CustomCalendarState extends State<CustomCalendar> {
                       fontWeight: FontWeight.w500,
                       fontSize: 20,
                       color: Colors.grey.shade700,
+                      fontFamily: widget.fontFamily,
                     ),
                   ),
                 ),
@@ -147,24 +188,30 @@ class CustomCalendarState extends State<CustomCalendar> {
                   width: 38,
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(24.0)),
-                    border: Border.all(
-                      color: Colors.grey.shade300,
-                    ),
+                    border: Border.all(color: Colors.grey.shade300),
                   ),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(24.0),
+                      ),
                       onTap: () {
                         setState(() {
-                          currentMonthDate = DateTime(currentMonthDate.year, currentMonthDate.month + 2, 0);
+                          currentMonthDate = DateTime(
+                            currentMonthDate.year,
+                            currentMonthDate.month + 2,
+                            0,
+                          );
                           setListOfDate(currentMonthDate);
                         });
                       },
-                      child: const Icon(
-                        Icons.keyboard_arrow_right,
-                        color: Colors.grey,
-                      ),
+                      child:
+                          widget.rightChevronIcon ??
+                          Icon(
+                            Icons.keyboard_arrow_right,
+                            color: widget.chevronColor ?? Colors.grey,
+                          ),
                     ),
                   ),
                 ),
@@ -174,15 +221,11 @@ class CustomCalendarState extends State<CustomCalendar> {
         ),
         Padding(
           padding: const EdgeInsets.only(right: 8, left: 8, bottom: 8),
-          child: Row(
-            children: getDaysNameUI(),
-          ),
+          child: Row(children: getDaysNameUI()),
         ),
         Padding(
           padding: const EdgeInsets.only(right: 8, left: 8),
-          child: Column(
-            children: getDaysNoUI(),
-          ),
+          child: Column(children: getDaysNoUI()),
         ),
       ],
     );
@@ -196,7 +239,12 @@ class CustomCalendarState extends State<CustomCalendar> {
           child: Center(
             child: Text(
               DateFormat('EEE').format(dateList[i]),
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: widget.primaryColor),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: widget.primaryColor,
+                fontFamily: widget.fontFamily,
+              ),
             ),
           ),
         ),
@@ -224,26 +272,35 @@ class CustomCalendarState extends State<CustomCalendar> {
                       color: Colors.transparent,
                       child: Padding(
                         padding: EdgeInsets.only(
-                            top: 2,
-                            bottom: 2,
-                            left: isStartDateRadius(date) ? 4 : 0,
-                            right: isEndDateRadius(date) ? 4 : 0),
+                          top: 2,
+                          bottom: 2,
+                          left: isStartDateRadius(date) ? 4 : 0,
+                          right: isEndDateRadius(date) ? 4 : 0,
+                        ),
                         child: Container(
                           decoration: BoxDecoration(
                             color: startDate != null && endDate != null
-                                ? getIsItStartAndEndDate(date) || getIsInRange(date)
-                                    ? widget.primaryColor.withValues(alpha: 0.4)
-                                    : Colors.transparent
+                                ? getIsItStartAndEndDate(date) ||
+                                          getIsInRange(date)
+                                      ? widget.dateRangeColor ??
+                                            widget.primaryColor.withValues(
+                                              alpha: 0.4,
+                                            )
+                                      : Colors.transparent
                                 : Colors.transparent,
                             borderRadius: BorderRadius.only(
-                              bottomLeft:
-                                  isStartDateRadius(date) ? const Radius.circular(24.0) : const Radius.circular(0.0),
-                              topLeft:
-                                  isStartDateRadius(date) ? const Radius.circular(24.0) : const Radius.circular(0.0),
-                              topRight:
-                                  isEndDateRadius(date) ? const Radius.circular(24.0) : const Radius.circular(0.0),
-                              bottomRight:
-                                  isEndDateRadius(date) ? const Radius.circular(24.0) : const Radius.circular(0.0),
+                              bottomLeft: isStartDateRadius(date)
+                                  ? const Radius.circular(24.0)
+                                  : const Radius.circular(0.0),
+                              topLeft: isStartDateRadius(date)
+                                  ? const Radius.circular(24.0)
+                                  : const Radius.circular(0.0),
+                              topRight: isEndDateRadius(date)
+                                  ? const Radius.circular(24.0)
+                                  : const Radius.circular(0.0),
+                              bottomRight: isEndDateRadius(date)
+                                  ? const Radius.circular(24.0)
+                                  : const Radius.circular(0.0),
                             ),
                           ),
                         ),
@@ -253,26 +310,42 @@ class CustomCalendarState extends State<CustomCalendar> {
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      borderRadius: const BorderRadius.all(Radius.circular(32.0)),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(32.0),
+                      ),
                       onTap: () {
                         if (currentMonthDate.month == date.month) {
-                          if (widget.minimumDate != null && widget.maximumDate != null) {
+                          if (widget.minimumDate != null &&
+                              widget.maximumDate != null) {
                             final DateTime newminimumDate = DateTime(
-                                widget.minimumDate!.year, widget.minimumDate!.month, widget.minimumDate!.day - 1);
+                              widget.minimumDate!.year,
+                              widget.minimumDate!.month,
+                              widget.minimumDate!.day - 1,
+                            );
                             final DateTime newmaximumDate = DateTime(
-                                widget.maximumDate!.year, widget.maximumDate!.month, widget.maximumDate!.day + 1);
-                            if (date.isAfter(newminimumDate) && date.isBefore(newmaximumDate)) {
+                              widget.maximumDate!.year,
+                              widget.maximumDate!.month,
+                              widget.maximumDate!.day + 1,
+                            );
+                            if (date.isAfter(newminimumDate) &&
+                                date.isBefore(newmaximumDate)) {
                               onDateClick(date);
                             }
                           } else if (widget.minimumDate != null) {
                             final DateTime newminimumDate = DateTime(
-                                widget.minimumDate!.year, widget.minimumDate!.month, widget.minimumDate!.day - 1);
+                              widget.minimumDate!.year,
+                              widget.minimumDate!.month,
+                              widget.minimumDate!.day - 1,
+                            );
                             if (date.isAfter(newminimumDate)) {
                               onDateClick(date);
                             }
                           } else if (widget.maximumDate != null) {
                             final DateTime newmaximumDate = DateTime(
-                                widget.maximumDate!.year, widget.maximumDate!.month, widget.maximumDate!.day + 1);
+                              widget.maximumDate!.year,
+                              widget.maximumDate!.month,
+                              widget.maximumDate!.day + 1,
+                            );
                             if (date.isBefore(newmaximumDate)) {
                               onDateClick(date);
                             }
@@ -285,18 +358,27 @@ class CustomCalendarState extends State<CustomCalendar> {
                         padding: const EdgeInsets.all(2),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: getIsItStartAndEndDate(date) ? widget.primaryColor : Colors.transparent,
-                            borderRadius: const BorderRadius.all(Radius.circular(32.0)),
+                            color: getIsItStartAndEndDate(date)
+                                ? (widget.selectedDateColor ??
+                                      widget.primaryColor)
+                                : Colors.transparent,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(32.0),
+                            ),
                             border: Border.all(
-                              color: getIsItStartAndEndDate(date) ? Colors.white : Colors.transparent,
+                              color: getIsItStartAndEndDate(date)
+                                  ? (widget.selectedDateTextColor ??
+                                        Colors.white)
+                                  : Colors.transparent,
                               width: 2,
                             ),
                             boxShadow: getIsItStartAndEndDate(date)
                                 ? <BoxShadow>[
                                     BoxShadow(
-                                        color: Colors.grey.withValues(alpha: 0.6),
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 0)),
+                                      color: Colors.grey.withValues(alpha: 0.6),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 0),
+                                    ),
                                   ]
                                 : null,
                           ),
@@ -304,13 +386,21 @@ class CustomCalendarState extends State<CustomCalendar> {
                             child: Text(
                               '${date.day}',
                               style: TextStyle(
-                                  color: getIsItStartAndEndDate(date)
-                                      ? Colors.white
-                                      : currentMonthDate.month == date.month
-                                          ? widget.primaryColor
-                                          : Colors.grey.withValues(alpha: 0.6),
-                                  fontSize: MediaQuery.of(context).size.width > 360 ? 18 : 16,
-                                  fontWeight: getIsItStartAndEndDate(date) ? FontWeight.bold : FontWeight.normal),
+                                color: getIsItStartAndEndDate(date)
+                                    ? (widget.selectedDateTextColor ??
+                                          Colors.white)
+                                    : currentMonthDate.month == date.month
+                                    ? widget.primaryColor
+                                    : Colors.grey.withValues(alpha: 0.6),
+                                fontSize:
+                                    MediaQuery.of(context).size.width > 360
+                                    ? 18
+                                    : 16,
+                                fontWeight: getIsItStartAndEndDate(date)
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                fontFamily: widget.fontFamily,
+                              ),
                             ),
                           ),
                         ),
@@ -325,14 +415,16 @@ class CustomCalendarState extends State<CustomCalendar> {
                       height: 6,
                       width: 6,
                       decoration: BoxDecoration(
-                          color: DateTime.now().day == date.day &&
-                                  DateTime.now().month == date.month &&
-                                  DateTime.now().year == date.year
-                              ? getIsInRange(date)
+                        color:
+                            DateTime.now().day == date.day &&
+                                DateTime.now().month == date.month &&
+                                DateTime.now().year == date.year
+                            ? getIsInRange(date)
                                   ? Colors.white
                                   : widget.primaryColor
-                              : Colors.transparent,
-                          shape: BoxShape.circle),
+                            : Colors.transparent,
+                        shape: BoxShape.circle,
+                      ),
                     ),
                   ),
                 ],
@@ -342,12 +434,14 @@ class CustomCalendarState extends State<CustomCalendar> {
         );
         count += 1;
       }
-      noList.add(Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: listUI,
-      ));
+      noList.add(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: listUI,
+        ),
+      );
     }
     return noList;
   }
@@ -381,7 +475,9 @@ class CustomCalendarState extends State<CustomCalendar> {
   }
 
   bool isStartDateRadius(DateTime date) {
-    if (startDate != null && startDate!.day == date.day && startDate!.month == date.month) {
+    if (startDate != null &&
+        startDate!.day == date.day &&
+        startDate!.month == date.month) {
       return true;
     } else if (date.weekday == 1) {
       return true;
@@ -391,7 +487,9 @@ class CustomCalendarState extends State<CustomCalendar> {
   }
 
   bool isEndDateRadius(DateTime date) {
-    if (endDate != null && endDate!.day == date.day && endDate!.month == date.month) {
+    if (endDate != null &&
+        endDate!.day == date.day &&
+        endDate!.month == date.month) {
       return true;
     } else if (date.weekday == 7) {
       return true;

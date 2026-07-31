@@ -45,6 +45,46 @@ class CustomDateRangePicker extends StatefulWidget {
   /// A callback function that is called when the user cancels the selection of the date range.
   final Function() onCancelClick;
 
+  /// Fill color for the Apply button. Falls back to [primaryColor] when null.
+  final Color? applyButtonColor;
+
+  /// Fill color for the Cancel button. Falls back to [primaryColor] when null.
+  final Color? cancelButtonColor;
+
+  /// Border color for the Apply button. Falls back to [primaryColor] when null.
+  final Color? applyBorderColor;
+
+  /// Border color for the Cancel button. Falls back to [primaryColor] when null.
+  final Color? cancelBorderColor;
+
+  /// Text color for the Apply button. Falls back to [Colors.white] when null.
+  final Color? applyTextColor;
+
+  /// Text color for the Cancel button. Falls back to [Colors.white] when null.
+  final Color? cancelTextColor;
+
+  /// Fill color for the selected start/end date. Falls back to [primaryColor].
+  final Color? selectedDateColor;
+
+  /// Text color for the selected start/end date. Falls back to [Colors.white].
+  final Color? selectedDateTextColor;
+
+  /// Highlight color for dates within the selected range.
+  /// Falls back to [primaryColor] with 40% opacity when null.
+  final Color? dateRangeColor;
+
+  /// Custom previous-month chevron widget.
+  final Widget? leftChevronIcon;
+
+  /// Custom next-month chevron widget.
+  final Widget? rightChevronIcon;
+
+  /// Tint for the default chevron icons. Falls back to [Colors.grey].
+  final Color? chevronColor;
+
+  /// Font family applied to all text in the picker.
+  final String? fontFamily;
+
   const CustomDateRangePicker({
     super.key,
     this.initialStartDate,
@@ -56,13 +96,27 @@ class CustomDateRangePicker extends StatefulWidget {
     required this.minimumDate,
     required this.maximumDate,
     required this.onCancelClick,
+    this.applyButtonColor,
+    this.cancelButtonColor,
+    this.applyBorderColor,
+    this.cancelBorderColor,
+    this.applyTextColor,
+    this.cancelTextColor,
+    this.selectedDateColor,
+    this.selectedDateTextColor,
+    this.dateRangeColor,
+    this.leftChevronIcon,
+    this.rightChevronIcon,
+    this.chevronColor,
+    this.fontFamily,
   });
 
   @override
   CustomDateRangePickerState createState() => CustomDateRangePickerState();
 }
 
-class CustomDateRangePickerState extends State<CustomDateRangePicker> with TickerProviderStateMixin {
+class CustomDateRangePickerState extends State<CustomDateRangePicker>
+    with TickerProviderStateMixin {
   AnimationController? animationController;
 
   DateTime? startDate;
@@ -71,7 +125,10 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker> with Ticke
 
   @override
   void initState() {
-    animationController = AnimationController(duration: const Duration(milliseconds: 400), vsync: this);
+    animationController = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
     startDate = widget.initialStartDate;
     endDate = widget.initialEndDate;
     animationController?.forward();
@@ -107,7 +164,11 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker> with Ticke
                   color: widget.backgroundColor,
                   borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                   boxShadow: <BoxShadow>[
-                    BoxShadow(color: Colors.grey.withValues(alpha: 0.2), offset: const Offset(4, 4), blurRadius: 8.0),
+                    BoxShadow(
+                      color: Colors.grey.withValues(alpha: 0.2),
+                      offset: const Offset(4, 4),
+                      blurRadius: 8.0,
+                    ),
                   ],
                 ),
                 child: InkWell(
@@ -132,17 +193,21 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker> with Ticke
                                     fontWeight: FontWeight.w400,
                                     fontSize: 16,
                                     color: Colors.grey.shade700,
+                                    fontFamily: widget.fontFamily,
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 4,
-                                ),
+                                const SizedBox(height: 4),
                                 Text(
-                                  startDate != null ? DateFormat('EEE, dd MMM').format(startDate!) : '--/-- ',
+                                  startDate != null
+                                      ? DateFormat(
+                                          'EEE, dd MMM',
+                                        ).format(startDate!)
+                                      : '--/-- ',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
                                     color: Colors.grey.shade700,
+                                    fontFamily: widget.fontFamily,
                                   ),
                                 ),
                               ],
@@ -164,59 +229,87 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker> with Ticke
                                     fontWeight: FontWeight.w400,
                                     fontSize: 16,
                                     color: Colors.grey.shade700,
+                                    fontFamily: widget.fontFamily,
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 4,
-                                ),
+                                const SizedBox(height: 4),
                                 Text(
-                                  endDate != null ? DateFormat('EEE, dd MMM').format(endDate!) : '--/-- ',
+                                  endDate != null
+                                      ? DateFormat(
+                                          'EEE, dd MMM',
+                                        ).format(endDate!)
+                                      : '--/-- ',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
                                     color: Colors.grey.shade700,
+                                    fontFamily: widget.fontFamily,
                                   ),
                                 ),
                               ],
                             ),
-                          )
+                          ),
                         ],
                       ),
-                      const Divider(
-                        height: 1,
-                      ),
+                      const Divider(height: 1),
                       CustomCalendar(
                         minimumDate: widget.minimumDate,
                         maximumDate: widget.maximumDate,
                         initialEndDate: widget.initialEndDate,
                         initialStartDate: widget.initialStartDate,
                         primaryColor: widget.primaryColor,
-                        startEndDateChange: (DateTime startDateData, DateTime endDateData) {
-                          setState(() {
-                            startDate = startDateData;
-                            endDate = endDateData;
-                          });
-                        },
+                        selectedDateColor: widget.selectedDateColor,
+                        selectedDateTextColor: widget.selectedDateTextColor,
+                        dateRangeColor: widget.dateRangeColor,
+                        leftChevronIcon: widget.leftChevronIcon,
+                        rightChevronIcon: widget.rightChevronIcon,
+                        chevronColor: widget.chevronColor,
+                        fontFamily: widget.fontFamily,
+                        startEndDateChange:
+                            (DateTime startDateData, DateTime endDateData) {
+                              setState(() {
+                                startDate = startDateData;
+                                endDate = endDateData;
+                              });
+                            },
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 8),
+                        padding: const EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          bottom: 16,
+                          top: 8,
+                        ),
                         child: Row(
                           children: [
                             Expanded(
                               child: Container(
                                 height: 48,
                                 decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(24.0)),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(24.0),
+                                  ),
                                 ),
                                 child: OutlinedButton(
                                   style: ButtonStyle(
-                                    side: WidgetStateProperty.all(BorderSide(color: widget.primaryColor)),
-                                    shape: WidgetStateProperty.all(
-                                      const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(Radius.circular(24.0)),
+                                    side: WidgetStateProperty.all(
+                                      BorderSide(
+                                        color:
+                                            widget.cancelBorderColor ??
+                                            widget.primaryColor,
                                       ),
                                     ),
-                                    backgroundColor: WidgetStateProperty.all(widget.primaryColor),
+                                    shape: WidgetStateProperty.all(
+                                      const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(24.0),
+                                        ),
+                                      ),
+                                    ),
+                                    backgroundColor: WidgetStateProperty.all(
+                                      widget.cancelButtonColor ??
+                                          widget.primaryColor,
+                                    ),
                                   ),
                                   onPressed: () {
                                     try {
@@ -224,13 +317,16 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker> with Ticke
                                       Navigator.pop(context);
                                     } catch (_) {}
                                   },
-                                  child: const Center(
+                                  child: Center(
                                     child: Text(
                                       'Cancel',
                                       style: TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 18,
-                                        color: Colors.white,
+                                        color:
+                                            widget.cancelTextColor ??
+                                            Colors.white,
+                                        fontFamily: widget.fontFamily,
                                       ),
                                     ),
                                   ),
@@ -242,17 +338,30 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker> with Ticke
                               child: Container(
                                 height: 48,
                                 decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(24.0)),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(24.0),
+                                  ),
                                 ),
                                 child: OutlinedButton(
                                   style: ButtonStyle(
-                                    side: WidgetStateProperty.all(BorderSide(color: widget.primaryColor)),
-                                    shape: WidgetStateProperty.all(
-                                      const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(Radius.circular(24.0)),
+                                    side: WidgetStateProperty.all(
+                                      BorderSide(
+                                        color:
+                                            widget.applyBorderColor ??
+                                            widget.primaryColor,
                                       ),
                                     ),
-                                    backgroundColor: WidgetStateProperty.all(widget.primaryColor),
+                                    shape: WidgetStateProperty.all(
+                                      const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(24.0),
+                                        ),
+                                      ),
+                                    ),
+                                    backgroundColor: WidgetStateProperty.all(
+                                      widget.applyButtonColor ??
+                                          widget.primaryColor,
+                                    ),
                                   ),
                                   onPressed: () {
                                     try {
@@ -260,13 +369,16 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker> with Ticke
                                       Navigator.pop(context);
                                     } catch (_) {}
                                   },
-                                  child: const Center(
+                                  child: Center(
                                     child: Text(
                                       'Apply',
                                       style: TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 18,
-                                        color: Colors.white,
+                                        color:
+                                            widget.applyTextColor ??
+                                            Colors.white,
+                                        fontFamily: widget.fontFamily,
                                       ),
                                     ),
                                   ),
@@ -275,7 +387,7 @@ class CustomDateRangePickerState extends State<CustomDateRangePicker> with Ticke
                             ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -313,6 +425,18 @@ void showCustomDateRangePicker(
   required Color backgroundColor,
   required Color primaryColor,
   String? fontFamily,
+  Color? applyButtonColor,
+  Color? cancelButtonColor,
+  Color? applyBorderColor,
+  Color? cancelBorderColor,
+  Color? applyTextColor,
+  Color? cancelTextColor,
+  Color? selectedDateColor,
+  Color? selectedDateTextColor,
+  Color? dateRangeColor,
+  Widget? leftChevronIcon,
+  Widget? rightChevronIcon,
+  Color? chevronColor,
 }) {
   /// Request focus to take it away from any input field that might be in focus
   FocusScope.of(context).requestFocus(FocusNode());
@@ -330,6 +454,19 @@ void showCustomDateRangePicker(
       initialEndDate: endDate,
       onApplyClick: onApplyClick,
       onCancelClick: onCancelClick,
+      fontFamily: fontFamily,
+      applyButtonColor: applyButtonColor,
+      cancelButtonColor: cancelButtonColor,
+      applyBorderColor: applyBorderColor,
+      cancelBorderColor: cancelBorderColor,
+      applyTextColor: applyTextColor,
+      cancelTextColor: cancelTextColor,
+      selectedDateColor: selectedDateColor,
+      selectedDateTextColor: selectedDateTextColor,
+      dateRangeColor: dateRangeColor,
+      leftChevronIcon: leftChevronIcon,
+      rightChevronIcon: rightChevronIcon,
+      chevronColor: chevronColor,
     ),
   );
 }
